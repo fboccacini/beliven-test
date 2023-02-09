@@ -1,11 +1,17 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import Dashboard from './components/Dashboard';
+import * as ReactDOM from "react-dom/client";
+import reportWebVitals from './reportWebVitals';
+import App from "./App";
 
-ReactDOM.render(
-    <div>
-      <h1>This is a wonderful quiz game!!</h1>
-      <Dashboard/>
-    </div>,
-    document.getElementById("root")
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <h1>Benvenuto al quizzone!!</h1>
+    <App />
+  </React.StrictMode>
 );
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
