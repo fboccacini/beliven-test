@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Navbar } from 'reactstrap';
 import useWebSocket from 'react-use-websocket';
-import Timer from './components/Timer';
 
 import './App.css';
+import Timer from './components/Timer';
 import TextEditor from './components/TextEditor';
 import PlayersList from './components/PlayersList';
 import JudgeComponent from './components/JudgeComponent';
@@ -14,7 +13,7 @@ const App = () => {
   const [status, setStatus] = useState(null);
   const [statusMessage, setStatusMessage] = useState(<div className='status-message'>Inserisci un nome per entrare nel gioco</div>);
 
-  const { sendJsonMessage, readyState } = useWebSocket(WS_URL, {
+  const { sendJsonMessage } = useWebSocket(WS_URL, {
     onOpen: () => {
       console.log('WebSocket connection established.');
       syncStatus();
@@ -73,28 +72,6 @@ const App = () => {
         command: 'resync',
         data: status,
       });
-      // if (status.thisPlayer?.name != null) {
-      //   sendJsonMessage({
-      //     command: 'set_name',
-      //     data: status.thisPlayer.name,
-      //   });
-      // }
-      // if (status.isMaster) {
-      //   sendJsonMessage({
-      //     command: 'take_mastership',
-      //   });
-      // }
-      // if (status.question?.name != null) {
-      //   sendJsonMessage({
-      //     command: 'open_question',
-      //     data: status.question,
-      //   });
-      // }
-      // if (status.isAnswering) {
-      //   sendJsonMessage({
-      //     command: 'stop_timer',
-      //   });
-      // }
     }
   }
 
@@ -102,15 +79,14 @@ const App = () => {
       <div className='game-board'>
         <h2>{ status?.question }</h2>
         <h3>{ status?.answer }</h3>
-        <div className='settings-box'>
+        <div className='box'>
           {
             status?.thisPlayer == null || status?.thisPlayer?.name?.length <= 0 ?
               <>
                 Username
                 <TextEditor sendJsonMessage={ sendJsonMessage } command='set_name'/>
-              </>
-              : null
-            }
+              </> : null
+          }
           { status?.status === 'awaiting_master' ?
               <button onClick={takeMastership}>Diventa Master</button> : null
           }
@@ -119,8 +95,10 @@ const App = () => {
           }
           { statusMessage }
         </div>
-        <div className='settings-box'>
-          { status?.status === 'time_running' && status?.thisPlayer?.inGame ? <Timer sendJsonMessage={ sendJsonMessage } timer={ status?.timer } isMaster={ status.isMaster }/> : null }
+        <div className='box'>
+          { status?.status === 'time_running' && status?.thisPlayer?.inGame ? 
+            <Timer sendJsonMessage={ sendJsonMessage } timer={ status?.timer } isMaster={ status.isMaster }/> : null 
+          }
           { status?.isMaster ? 
               status?.status === 'awaiting_question' ? 
                 <>
@@ -134,12 +112,11 @@ const App = () => {
             <>
               Rispondi
               <TextEditor sendJsonMessage={ sendJsonMessage } command='send_answer'/>
-            </>
-             : null
+            </> : null
           }
           <div>{ status?.message }</div>
         </div>
-        <div className='settings-box'>
+        <div className='box'>
           Master: { status?.master }
           { status == null ? null :
             <PlayersList isMaster={ status?.isMaster } thisPlayer={ status?.thisPlayer } otherPlayers={ status?.otherPlayers }/>

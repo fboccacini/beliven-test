@@ -43,8 +43,6 @@ const app = express();
 app.use(cors());
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET, POST");
-  res.header("Access-Control-Allow-Credentials", "true");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
@@ -62,7 +60,7 @@ wsServer.on('connection', (connection) => {
   // Generate a unique code for every user
   const userId = uuid();
 
-  // Store the new connection and handle messages
+  // Store the new connection and player data
   clients[userId] = {
     id: userId,
     connection: connection,
@@ -76,6 +74,7 @@ wsServer.on('connection', (connection) => {
   broadcastStatus('Un nuovo giocatore è entrato', userId, 'Benvenuto!');
 });
 
+// Check if the master is missing or there are less than two players
 const evaluateStatus = () => {
   if (master === null) {
     return Status.AWAIT_MASTER;
@@ -85,8 +84,8 @@ const evaluateStatus = () => {
   return status;
 }
 
+// Get valid players
 const getPlayers = () => {
-  // Players must have a name
   return Object.keys(clients)
     .filter((userId) => clients[userId].name?.length > 0 && userId !== master )
     .map((userId) => { 
@@ -94,6 +93,7 @@ const getPlayers = () => {
     });
 }
 
+// Get valid players who are not disqualified
 const getActivePlayers = () => {
   return Object.keys(clients)
     .filter((userId) => clients[userId].name?.length > 0 && userId !== master && clients[userId].inGame )
@@ -102,6 +102,7 @@ const getActivePlayers = () => {
     });
 }
 
+// If a player disconnects, remove it from the array and notify the others
 const handleDisconnect = (userId) => {
     console.log(`${userId} disconnected.`);
     if (master === userId) {
@@ -111,6 +112,7 @@ const handleDisconnect = (userId) => {
     broadcastStatus(`${clients[userId].name} ha abbandonato il gioco`, userId, `Hai abbandonato il gioco`);
 };
 
+// Main game logic. If a message comes from the frontend evaluate the command and update status
 const handleMessage = (data, userId) => {
   const dataFromClient = JSON.parse(data.toString());
   let message = '';
@@ -118,8 +120,6 @@ const handleMessage = (data, userId) => {
   switch(dataFromClient.command) {
     case Command.RESYNC: 
       // A player has reconnected
-      
-      console.log(`${userId} is resyncing`, dataFromClient);
       if (status == null) {
         if (dataFromClient.isMaster) {
           master = userId;
@@ -217,6 +217,7 @@ const handleMessage = (data, userId) => {
         } else {
           Status.GAME_ENDED;
         }
+        userId = answerer;
         console.log(`${clients[answerer].name} has been disqualified`);
       }
       break;
@@ -241,6 +242,7 @@ const handleMessage = (data, userId) => {
   broadcastStatus(message, userId, alternateMessage);
 }
 
+// Manage timer
 const handleTimer = () => {
   timer--;
   if (timer < 0) {
@@ -253,6 +255,7 @@ const handleTimer = () => {
   return broadcastStatus(question, master, 'Il timer è partito');
 }
 
+// Notify all participants. Messages are different for the player that originated the request and the others
 const broadcastStatus = (message, triggerUserId, alternateMessage) => {
   // Update game status for all players and master
   for(const userId in clients) {
