@@ -6,8 +6,12 @@ import App from "./App";
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <h1>Benvenuto al quizzone!!</h1>
-    <App />
+    <div className="dashboard">
+      <div className="game">
+        <h1>Benvenuto al quizzone!!</h1>
+        <App />
+      </div>
+    </div>
   </React.StrictMode>
 );
 

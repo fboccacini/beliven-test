@@ -13,6 +13,7 @@ enum Command {
   SEND_ANSWER = 'send_answer',
   JUDGE_ANSWER = 'judge_answer',
   RESET_GAME = 'reset_game',
+  RESYNC = 'resync',
 }
 
 enum Status {
@@ -35,7 +36,7 @@ let answer = null;
 let answerer = null;
 let timerInterval = null;
 let timer = max_time;
-let status = Status.AWAIT_MASTER;
+let status = null;
 
 // Spinning the http server and the WebSocket server.
 const app = express();
@@ -79,7 +80,6 @@ const evaluateStatus = () => {
   if (master === null) {
     return Status.AWAIT_MASTER;
   } else if (getPlayers().length < 2) {
-    console.log(Object.keys(clients).map((p) => {clients[p].name}));
     return Status.AWAIT_PLAYERS;
   }
   return status;
@@ -108,6 +108,7 @@ const handleDisconnect = (userId) => {
       master = null;
     }
     delete clients[userId];
+    broadcastStatus(`${clients[userId].name} ha abbandonato il gioco`, userId, `Hai abbandonato il gioco`);
 };
 
 const handleMessage = (data, userId) => {
@@ -115,6 +116,28 @@ const handleMessage = (data, userId) => {
   let message = '';
   let alternateMessage = '';
   switch(dataFromClient.command) {
+    case Command.RESYNC: 
+      // A player has reconnected
+      
+      console.log(`${userId} is resyncing`, dataFromClient);
+      if (status == null) {
+        if (dataFromClient.isMaster) {
+          master = userId;
+        }
+        if (dataFromClient.isAnswering) {
+          answer = userId
+        }
+        question = dataFromClient.question;
+        answer = dataFromClient.answer;
+        status = dataFromClient.status;
+      }
+      if (!dataFromClient.thisPlayer == null) {
+        clients[userId].name = dataFromClient.thisPlayer.name;
+        clients[userId].points = dataFromClient.thisPlayer.points;
+        clients[userId].inGame = dataFromClient.thisPlayer.inGame;
+      }
+      console.log(`${userId} is resyncing`, dataFromClient);
+      break;
     case Command.SET_NAME: 
       // A player changes its name
       message = clients[userId].name == null ? `${dataFromClient.data} è entrato in gioco` : `${clients[userId].name} è diventato ${dataFromClient.data}`;
@@ -124,19 +147,23 @@ const handleMessage = (data, userId) => {
       break;
     case Command.TAKE_MASTERSHIP:
       // A player becomes the master
-      master = userId;
-      message = clients[userId].name == null ? `${userId} è diventato il master.` : `${clients[userId].name} è diventato master`;
-      if (clients[userId].name == null) {
-        clients[userId].name = 'Master';
+      if (master == null) {
+        master = userId;
+        message = clients[userId].name == null ? `${userId} è diventato il master.` : `${clients[userId].name} è diventato master`;
+        if (clients[userId].name == null) {
+          clients[userId].name = 'Master';
+        }
+        alternateMessage = `Sei diventato il master`;
+        status = Status.AWAIT_QUESTION;
+        console.log(`${userId} has become the master.`);
       }
-      alternateMessage = `Sei diventato il master`;
-      status = getPlayers().length > 2 ? Status.AWAIT_QUESTION : Status.AWAIT_PLAYERS;
-      console.log(`${userId} has become the master.`);
       break;
     case Command.OPEN_QUESTION:
       // The master asks a question
       question = dataFromClient.data;
       message = question;
+      answer = null;
+      answerer = null;
       alternateMessage = 'Il timer è partito';
       timer = 30;
       timerInterval = setInterval(handleTimer, 1000);
@@ -145,13 +172,14 @@ const handleMessage = (data, userId) => {
       break;
     case Command.STOP_TIMER:
       // A player stops the timer in order to answer
-      question = dataFromClient.data;
-      message = `${clients[userId].name} ha prenotato la risposta`;
-      alternateMessage = 'Hai prenotato la risposta!';
-      answerer = userId;
-      clearInterval(timerInterval);
-      status = Status.AWAIT_ANSWER;
-      console.log(`Timer has stopped. ${clients[answerer].name} tries to answer`);
+      if (status === Status.TIME_RUNNING) {
+        status = Status.AWAIT_ANSWER;
+        clearInterval(timerInterval);
+        answerer = userId;
+        message = `${clients[userId].name} ha prenotato la risposta`;
+        alternateMessage = 'Hai prenotato la risposta!';
+        console.log(`Timer has stopped. ${clients[answerer].name} tries to answer`);  
+      }
       break;
     case Command.SEND_ANSWER:
       // The player that stopped to timer sends the answer
@@ -172,8 +200,8 @@ const handleMessage = (data, userId) => {
           status = Status.GAME_ENDED;
           console.log(`${clients[answerer].name} has won the session`);
         } else {
-          message = `Risposta corretta! ${clients[answerer].name} guadagna un punto`;
-          alternateMessage = `Risposta corretta! Hai guadagnato un punto`;
+          message = `Risposta corretta! Hai guadagnato un punto`;
+          alternateMessage = `Risposta corretta! ${clients[answerer].name} guadagna un punto`;
           status = Status.AWAIT_QUESTION;
           console.log(`${clients[answerer].name} has gained one point`);
         }
@@ -233,7 +261,7 @@ const broadcastStatus = (message, triggerUserId, alternateMessage) => {
       const data = {
         id: userId,
         question: question,
-        answer: answer == null ? null : `${clients[answerer].name} ha risposto ${answer}`,
+        answer: answer == null ? null : `${clients[answerer]?.name} ha risposto ${answer}`,
         isMaster: master === userId, 
         isAnswering: userId === triggerUserId && status === Status.AWAIT_ANSWER,
         master: clients[master]?.name,
