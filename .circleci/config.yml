@@ -3,9 +3,8 @@ jobs:
   build:
     machine:
       image: circleci/classic:edge
-    working_directory: ~/repo
+    working_directory: /beliven-test
     steps:
-      - checkout
       - run:
           name: Install Docker Compose
           command: |
