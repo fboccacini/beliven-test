@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     machine:
-      image: cimg/base:stable
+      image: cimg/base:2021.04
     working_directory: /beliven-test
     steps:
       - run:
