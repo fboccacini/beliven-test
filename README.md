@@ -32,3 +32,9 @@ Dal punto di vista delle scelte tecniche, hai piena libertà. Gli unici vincoli 
 - Pubblicare l’applicazione funzionante online da qualche parte così da poter essere provata (es. surge.sh, netlify, heroku, vercel, ecc.)
 - Nel README scrivere eventuali note necessarie per l’avvio del sistema
 
+## Requisiti per l'avvio dell'ambiente in locale
+- Docker
+
+## Istruzioni per l'avvio dell'ambiente in locale
+Dalla cartella principale lanciare ```docker compose up```.
+Da un browser accedere a ```localhost:3000```.
