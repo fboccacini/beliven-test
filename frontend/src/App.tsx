@@ -8,7 +8,7 @@ import PlayersList from './components/PlayersList';
 import JudgeComponent from './components/JudgeComponent';
 
 const port = process.env.PORT || 8000;
-const WS_URL = `ws://0.0.0.0:${port}`;
+const WS_URL = `wss://0.0.0.0:${port}`;
 
 const App = () => {
   const [status, setStatus] = useState(null);
