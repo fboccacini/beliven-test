@@ -57,12 +57,12 @@ app.use(express.static(path.resolve(__dirname, "./frontend/build")));
 // Anything that doesn't match the above, send back index.html
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname + './frontend/build/index.html'))
-})
+});
 
 const server = http.createServer(app);
 const wsServer = new WebSocketServer({ server });
 const port = process.env.PORT || 8000;
-server.listen(port], () => {
+server.listen(port, () => {
   console.log(`WebSocket server is running on port ${port}`);
 });
 
