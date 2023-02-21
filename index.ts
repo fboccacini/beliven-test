@@ -52,11 +52,11 @@ app.use(express.urlencoded({ extended: true }));
 
 //This will create a middleware.
 //When you navigate to the root page, it would use the built react-app
-app.use(express.static(path.resolve(__dirname, "./frontend/dist")));
+app.use(express.static(path.resolve(__dirname, "./frontend/build")));
 
 // Anything that doesn't match the above, send back index.html
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname + '/frontend/dist/index.html'))
+  res.sendFile(path.join(__dirname + '/frontend/build/index.html'))
 })
 
 const server = http.createServer(app);
