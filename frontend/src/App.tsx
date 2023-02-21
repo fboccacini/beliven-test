@@ -7,7 +7,8 @@ import TextEditor from './components/TextEditor';
 import PlayersList from './components/PlayersList';
 import JudgeComponent from './components/JudgeComponent';
 
-const WS_URL = 'ws://localhost:8000';
+const port = process.env.PORT || 8000;
+const WS_URL = `ws://0.0.0.0:${port}`;
 
 const App = () => {
   const [status, setStatus] = useState(null);
