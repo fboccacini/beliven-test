@@ -21,7 +21,7 @@ services:
       context: ./frontend
     volumes:
       - /app/node_modules
-      - ./frontend:/app
+      - ./backend/frontend:/app
     depends_on:
       - backend
     ports: 
