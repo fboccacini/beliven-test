@@ -62,7 +62,7 @@ app.get('*', (req, res) => {
 const server = http.createServer(app);
 const wsServer = new WebSocketServer({ server });
 const port = process.env.PORT || 8000;
-server.listen(port, '0.0.0.0', () => {
+server.listen(port, () => {
   console.log(`WebSocket server is running on port ${port}`);
 });
 
