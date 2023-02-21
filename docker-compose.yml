@@ -5,10 +5,10 @@ services:
   backend:
     build:
       dockerfile: Dockerfile
-      context: ./backend
+      context: ./
     volumes:
       - /app/node_modules
-      - ./backend:/app
+      - ./:/app
     ports: 
       - 8000:8000
 
@@ -21,7 +21,7 @@ services:
       context: ./frontend
     volumes:
       - /app/node_modules
-      - ./backend/frontend:/app
+      - ./frontend:/app
     depends_on:
       - backend
     ports: 

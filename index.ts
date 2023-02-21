@@ -3,6 +3,7 @@ import cors from 'cors';
 import http from 'http';
 import { WebSocket, WebSocketServer } from 'ws';
 import { v4 as uuid } from 'uuid';
+import path from 'path';
 
 enum Command {
   SET_NAME = 'set_name',
@@ -48,6 +49,10 @@ app.use(function(req, res, next) {
 });
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+//This will create a middleware.
+//When you navigate to the root page, it would use the built react-app
+app.use(express.static(path.resolve(__dirname, "./frontend/dist")));
 
 const server = http.createServer(app);
 const wsServer = new WebSocketServer({ server });
