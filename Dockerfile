@@ -7,6 +7,6 @@ COPY package-lock.json ./
 COPY ./ ./
 
 RUN npm i
-RUN npx tsc
+RUN npx tsc --jsx
 
 CMD ["npm", "run", "start"]
