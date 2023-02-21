@@ -7,7 +7,7 @@
     "start": "node dist/index.js",
     "dev": "npx tsc && node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "heroku-postbuild": "cd frontend && npm install && npx tsc --jsx && npm run build"
+    "heroku-postbuild": "cd frontend && npm install && npx tsc --jsx react && npm run build"
   },
   "author": "",
   "license": "ISC",
