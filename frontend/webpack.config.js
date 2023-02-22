@@ -1,5 +1,5 @@
 const path = require('path');
-const Dotenv = require('dotenv-webpack');
+const webpack = require('webpack');
 
 module.exports = {
   entry: './src/index.tsx',
@@ -25,7 +25,9 @@ module.exports = {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
   },
-  plugins: [
-    new Dotenv(),
+  plugins: [    
+    new webpack.DefinePlugin({              
+      'process.env.WS_HOST': JSON.stringify(process.env.WS_HOST),
+    })
   ],
 };
