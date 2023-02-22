@@ -7,8 +7,7 @@ import TextEditor from './components/TextEditor';
 import PlayersList from './components/PlayersList';
 import JudgeComponent from './components/JudgeComponent';
 
-const WS_URL = process.env.WS_HOST || 'ws://localhost';
-console.log(process.env); 
+const WS_URL = process.env.REACT_APP_WS_HOST || 'ws://localhost';
 
 const App = () => {
   const [status, setStatus] = useState(null);

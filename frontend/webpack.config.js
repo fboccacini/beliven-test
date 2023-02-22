@@ -1,6 +1,5 @@
 const path = require('path');
-const webpack = require('webpack');
-console.log('test test test', process.env)
+
 module.exports = {
   entry: './src/index.tsx',
   module: {
@@ -25,9 +24,4 @@ module.exports = {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
   },
-  plugins: [    
-    new webpack.DefinePlugin({              
-      'process.env.WS_HOST': JSON.stringify(process.env.WS_HOST),
-    })
-  ],
 };
