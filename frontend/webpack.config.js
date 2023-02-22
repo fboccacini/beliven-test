@@ -1,7 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
-
-module.exports(env) = {
+console.log('test test test', process.env)
+module.exports = {
   entry: './src/index.tsx',
   module: {
     rules: [
@@ -27,7 +27,7 @@ module.exports(env) = {
   },
   plugins: [    
     new webpack.DefinePlugin({              
-      'process.env.WS_HOST': JSON.stringify(env.WS_HOST),
+      'process.env.WS_HOST': JSON.stringify(process.env.WS_HOST),
     })
   ],
 };
