@@ -8,7 +8,7 @@ import PlayersList from './components/PlayersList';
 import JudgeComponent from './components/JudgeComponent';
 
 const WS_URL = process.env.WS_HOST || 'ws://localhost';
-console.log(WS_URL); 
+console.log(process.env); 
 
 const App = () => {
   const [status, setStatus] = useState(null);
