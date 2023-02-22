@@ -8,9 +8,9 @@ import PlayersList from './components/PlayersList';
 import JudgeComponent from './components/JudgeComponent';
 
 const port = process.env.PORT || 8000;
-const host = process.env.HOST || 'beliven-quiz.herokuapp.com';
-const WS_URL = `wss://${host}:${port}`;
-console.log(process.env, WS_URL);
+const host = process.env.HOST || 'localhost';
+const WS_URL = `wss://localhost`;
+
 const App = () => {
   const [status, setStatus] = useState(null);
   const [statusMessage, setStatusMessage] = useState(<div className='status-message'>Inserisci un nome per entrare nel gioco</div>);
