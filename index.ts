@@ -118,8 +118,8 @@ const handleDisconnect = (userId) => {
     if (master === userId) {
       master = null;
     }
-    delete clients[userId];
     broadcastStatus(`${clients[userId].name} ha abbandonato il gioco`, userId, `Hai abbandonato il gioco`);
+    delete clients[userId];
 };
 
 // Main game logic. If a message comes from the frontend evaluate the command and update status
@@ -225,7 +225,7 @@ const handleMessage = (data, userId) => {
           timerInterval = setInterval(handleTimer, 1000);
           status = Status.TIME_RUNNING;
         } else {
-          Status.GAME_ENDED;
+          status = Status.GAME_ENDED;
         }
         userId = answerer;
         console.log(`${clients[answerer].name} has been disqualified`);

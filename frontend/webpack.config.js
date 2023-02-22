@@ -17,4 +17,9 @@ module.exports = {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
   },
+  plugins: [    
+    new webpack.DefinePlugin({              
+      WS_HOST: JSON.stringify(process.env.WS_HOST)
+    })
+  ],
 };

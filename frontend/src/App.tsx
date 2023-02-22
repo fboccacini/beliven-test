@@ -7,9 +7,7 @@ import TextEditor from './components/TextEditor';
 import PlayersList from './components/PlayersList';
 import JudgeComponent from './components/JudgeComponent';
 
-const port = process.env.PORT || 8000;
-const host = process.env.HOST || 'localhost';
-const WS_URL = `wss://beliven-quiz.herokuapp.com`;
+const WS_URL = process.env.WS_HOST || 'ws://localhost';
 
 const App = () => {
   const [status, setStatus] = useState(null);
