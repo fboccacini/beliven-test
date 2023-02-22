@@ -9,7 +9,7 @@ import JudgeComponent from './components/JudgeComponent';
 
 const port = process.env.PORT || 8000;
 const host = process.env.HOST || 'localhost';
-const WS_URL = `wss://localhost`;
+const WS_URL = `wss://beliven-quiz.herokuapp.com`;
 
 const App = () => {
   const [status, setStatus] = useState(null);
