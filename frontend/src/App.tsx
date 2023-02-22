@@ -8,7 +8,7 @@ import PlayersList from './components/PlayersList';
 import JudgeComponent from './components/JudgeComponent';
 
 const port = process.env.PORT || 8000;
-const host = location.origin.replace(/^http/, 'ws')
+const host = process.env.HOST || 'localhost';
 const WS_URL = `wss://${host}:${port}`;
 
 const App = () => {
