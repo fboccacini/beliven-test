@@ -7,7 +7,7 @@ import TextEditor from './components/TextEditor';
 import PlayersList from './components/PlayersList';
 import JudgeComponent from './components/JudgeComponent';
 
-const WS_URL = process.env.REACT_APP_WS_HOST || 'ws://localhost';
+const WS_URL = process.env.REACT_APP_WS_HOST || 'ws://localhost:8000';
 
 const App = () => {
   const [status, setStatus] = useState(null);
@@ -20,7 +20,7 @@ const App = () => {
     },
     onMessage: (message) => {
       const data = JSON.parse(message.data);
-      console.log(status?.thisPlayer?.id, data);
+      
       setStatus(data);
       if (!data.thisPlayer?.inGame) {
         setStatusMessage(<div className='status-message'>Attendi la prossima partita</div>);
