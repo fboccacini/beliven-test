@@ -32,6 +32,26 @@ Dal punto di vista delle scelte tecniche, hai piena libertà. Gli unici vincoli 
 - Pubblicare l’applicazione funzionante online da qualche parte così da poter essere provata (es. surge.sh, netlify, heroku, vercel, ecc.)
 - Nel README scrivere eventuali note necessarie per l’avvio del sistema
 
+# Implementazione
+
+Il sistema è stato implementato usando Node.js per il backend e React per il frontend. Le due app comunicano attraverso WebSocket, per mantenere lo stato in tempo reale fra tutti i giocatori.
+
+## Istruzioni per giocare
+Per partire sono necessari almeno due giocatori ed un Master, quindi tre persone. Per entrare in gioco è necessario inserire un nome, e uno dei giocatori deve diventare il master.
+
+Una volta iniziata la partita, il master inserisce una domanda, che viene visualizzata sullo schermo di tutti i giocatori.
+
+Nel momento in cui viene posta la domanda, ai giocatori compari un bottone timer che conta 30 secondi alla rovescia (al master compare di un altro colore e non è cliccabile).
+
+Il primo giocatore che clicca il bottone si prenota la risposta e gli comparirà un campo di testo per inserirla. Gli altri giocatori vedranno un messaggio indicante il nome di chi ha prenotato.
+
+Una volta inserita la risposta, tutti i giocatori vedono la risposta data ed al master vengono presentati due pulsanti: "Risposta corretta!" e "Risposta errata!".
+
+Se il master giudica la risposta corretta cliccando sul pulsante corrispondente, il giocatore riceve un punto e si riparte con una nuova domanda. Se la giudica errata, il giocatore che ha risposto sarà eliminato e gli altri rivedranno il bottone timer (stavolta di 10 secondi) per prenotarsi.
+
+Se nessuno prenota la risposta entro il tempo dato, viene posta un'altra domanda.
+Se un giocatore raggiunge 5 punti o non rimangono giocatori in gioco, compare un pulsante "Nuova partita" con cui ricominciare da capo mantenendo i nomi, ma con la necessità di scegliere un master.
+
 ## Bootstrap da locale
 In locale è possibile lanciare il sistema sia con Docker se disponibile, che manualmente.
 

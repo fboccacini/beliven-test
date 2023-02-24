@@ -31,6 +31,7 @@ const clients = {};
 const max_time = 30;
 const replay_time = 10;
 const winning_points = 5;
+
 let master = null;
 let question = null;
 let answer = null;
@@ -59,6 +60,7 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname + '/../frontend/build/index.html'))
 });
 
+// Starting web socket
 const server = http.createServer(app);
 const wsServer = new WebSocketServer({ server });
 const port = process.env.PORT || 8000;
@@ -103,10 +105,10 @@ const getPlayers = () => {
     });
 }
 
-// Get valid players who are not disqualified
+// Get valid players who are not disqualified (not filtering getPlayers to avoid loop the list two times)
 const getActivePlayers = () => {
   return Object.keys(clients)
-    .filter((userId) => clients[userId].name?.length > 0 && userId !== master && clients[userId].inGame )
+    .filter((userId) => clients[userId].name?.length > 0 && userId !== master && clients[userId].inGame)
     .map((userId) => { 
       return clients[userId];
     });
@@ -135,7 +137,7 @@ const handleMessage = (data, userId) => {
           master = userId;
         }
         if (dataFromClient.isAnswering) {
-          answer = userId
+          answerer = userId;
         }
         question = dataFromClient.question;
         answer = dataFromClient.answer;
@@ -156,7 +158,7 @@ const handleMessage = (data, userId) => {
       console.log(`${userId} changed name to ${clients[userId].name}.`);
       break;
     case Command.TAKE_MASTERSHIP:
-      // A player becomes the master
+      // A player becomes the master, if no one is
       if (master == null) {
         master = userId;
         message = clients[userId].name == null ? `${userId} è diventato il master.` : `${clients[userId].name} è diventato master`;
@@ -181,7 +183,7 @@ const handleMessage = (data, userId) => {
       console.log(`Timer has started. Master asked: ${question}`);
       break;
     case Command.STOP_TIMER:
-      // A player stops the timer in order to answer
+      // A player stops the timer in order to answer, if it's running
       if (status === Status.TIME_RUNNING) {
         status = Status.AWAIT_ANSWER;
         clearInterval(timerInterval);
@@ -265,7 +267,7 @@ const handleTimer = () => {
   return broadcastStatus(question, master, 'Il timer è partito');
 }
 
-// Notify all participants. Messages are different for the player that originated the request and the others
+// Notify all participants. AlternateMessage is for the player that originated the request and message for the others
 const broadcastStatus = (message, triggerUserId, alternateMessage) => {
   // Update game status for all players and master
   for(const userId in clients) {

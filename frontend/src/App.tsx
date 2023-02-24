@@ -88,10 +88,10 @@ const App = () => {
               </> : null
           }
           { status?.status === 'awaiting_master' ?
-              <button onClick={takeMastership}>Diventa Master</button> : null
+              <button onClick={ takeMastership }>Diventa Master</button> : null
           }
           { status?.status === 'game_ended' ?
-              <button onClick={resetGame}>Nuova partita</button> : null
+              <button onClick={ resetGame }>Nuova partita</button> : null
           }
           { statusMessage }
         </div>

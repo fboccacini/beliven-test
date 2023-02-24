@@ -12,6 +12,6 @@ export default class Timer extends React.Component <{sendJsonMessage: SendJsonMe
                 });
             }
         }
-        return (<div className={ this.props.isMaster ? 'timer master' : 'timer' } onClick={stopTimer}>{this.props.timer}</div>);
+        return (<div className={ this.props.isMaster ? 'timer master' : 'timer' } onClick={ stopTimer }> {this.props.timer }</div>);
     }
 }
